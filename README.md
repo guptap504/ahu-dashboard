@@ -1,328 +1,269 @@
-Welcome to your new TanStack app! 
+# AHU Dashboard
 
-# Getting Started
+A modern, real-time dashboard for monitoring and managing Air Handling Units (AHUs) built with TanStack Start, React 19, and TypeScript.
 
-To run this application:
+## 🚀 Features
 
-```bash
-pnpm install
-pnpm start
+### Dashboard Overview
+- **Real-time Monitoring**: Live status and performance metrics for all AHU units
+- **Interactive Charts**: Historical data visualization with temperature, humidity, fan speed, and power consumption trends
+- **Data Tables**: Comprehensive AHU deployment information with sorting and filtering
+- **Responsive Design**: Optimized for desktop and mobile devices
+
+### AHU Management
+- **Individual AHU Control**: Detailed view for each AHU unit with:
+  - Real-time sensor readings (temperature, humidity, power consumption)
+  - Individual fan speed controls with sliders
+  - Master power toggle for each unit
+  - Historical data charts (24-hour trends)
+  - Efficiency ratings and runtime statistics
+- **Bulk Operations**: Portfolio-wide monitoring and management
+- **Status Indicators**: Visual status badges for online/offline units
+
+### Technical Features
+- **Modern UI Components**: Built with Shadcn/ui and Radix UI primitives
+- **Type Safety**: Full TypeScript implementation with strict type checking
+- **Performance Optimized**: React 19 with concurrent features and efficient rendering
+- **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
+
+## 🛠️ Tech Stack
+
+### Core Framework
+- **TanStack Start** - Full-stack React framework with SSR capabilities
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Strict type checking and enhanced developer experience
+- **Vite** - Lightning-fast build tool and development server
+
+### UI & Styling
+- **Shadcn/ui** - Modern component library with Radix UI primitives
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **Radix UI** - Unstyled, accessible UI primitives
+- **Lucide React** - Beautiful icon library
+- **Recharts** - Data visualization and interactive charts
+
+### Data & State Management
+- **TanStack Query** - Server state management and caching
+- **TanStack Router** - Type-safe file-based routing
+- **TanStack Table** - Advanced data table functionality
+- **TanStack Form** - Form state management
+
+### Development Tools
+- **Biome** - Fast linting and formatting (replaces ESLint/Prettier)
+- **Vitest** - Modern testing framework
+- **pnpm** - Fast, disk space efficient package manager
+
+## 📁 Project Structure
+
+```
+src/
+├── components/           # Reusable UI components
+│   ├── ui/              # Shadcn/ui components
+│   ├── app-sidebar.tsx  # Main navigation sidebar
+│   ├── data-table.tsx   # AHU data table component
+│   ├── chart-area-interactive.tsx  # Interactive charts
+│   └── ...              # Other custom components
+├── routes/              # File-based routing
+│   ├── __root.tsx       # Root layout with navigation
+│   ├── index.tsx        # Dashboard home page
+│   └── ahu/             # AHU-specific routes
+│       └── $ahuId.tsx   # Individual AHU detail page
+├── data/                # Static data and mock data
+│   ├── ahu-data.ts      # AHU deployment data
+│   └── demo-table-data.ts  # Demo data for tables
+├── hooks/               # Custom React hooks
+├── integrations/        # Third-party integrations
+│   └── tanstack-query/  # Query client setup
+├── lib/                 # Utility functions
+└── styles.css           # Global styles and CSS variables
 ```
 
-# Building For Production
+## 🚀 Getting Started
 
-To build this application for production:
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd ahu-dashboard
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:3000` to view the dashboard
+
+### Available Scripts
 
 ```bash
-pnpm build
+# Development
+pnpm dev          # Start development server on port 3000
+pnpm build        # Build for production
+pnpm serve        # Preview production build
+
+# Testing
+pnpm test         # Run test suite
+
+# Code Quality
+pnpm lint         # Run linter
+pnpm format       # Format code
+pnpm check        # Run all checks (lint + format)
 ```
 
-## Testing
+## 📊 Dashboard Features
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+### Portfolio Overview
+- **Summary Cards**: Total AHUs, online status, average metrics
+- **Interactive Charts**: System-wide performance trends
+- **Data Table**: Complete AHU inventory with filtering and sorting
+
+### Individual AHU Management
+- **Real-time Metrics**: Current temperature, humidity, fan speeds, power consumption
+- **Control Panel**: 
+  - Master power toggle
+  - Individual fan speed controls (0-2000 RPM)
+  - Save/reset functionality with confirmation dialogs
+- **Historical Data**: 24-hour trend charts for:
+  - Temperature and humidity
+  - Fan speed and power consumption
+- **Specifications**: Model, serial number, installation date, efficiency rating
+
+### Data Visualization
+- **Interactive Charts**: Built with Recharts for smooth animations
+- **Responsive Design**: Charts adapt to different screen sizes
+- **Real-time Updates**: Live data refresh capabilities
+- **Export Options**: Chart data can be exported for analysis
+
+## 🎨 UI Components
+
+The dashboard uses a comprehensive set of UI components:
+
+- **Layout**: Sidebar navigation, responsive headers, breadcrumbs
+- **Data Display**: Cards, tables, badges, charts
+- **Forms**: Inputs, sliders, switches, toggles
+- **Feedback**: Alerts, toasts, loading states
+- **Navigation**: Tabs, dropdowns, breadcrumbs
+
+## 🔧 Configuration
+
+### Environment Variables
+The project uses T3Env for type-safe environment variables. Add your environment variables to `src/env.ts`:
+
+```typescript
+import { createEnv } from "@t3-oss/env-core";
+import { z } from "zod";
+
+export const env = createEnv({
+  server: {
+    // Server-side variables
+  },
+  client: {
+    // Client-side variables
+  },
+  runtimeEnv: {
+    // Runtime environment
+  },
+});
+```
+
+### Adding New AHU Units
+To add new AHU units, update the `ahuDeployments` array in `src/data/ahu-data.ts`:
+
+```typescript
+export const ahuDeployments: AHUData[] = [
+  {
+    id: 'ahu-011',
+    name: 'New AHU Unit',
+    location: 'Building E - Floor 1',
+    model: 'Carrier 39CQ',
+    serialNumber: 'C39CQ-2024-011',
+    installationDate: '2024-04-01',
+    numberOfFans: 3,
+    status: 'online',
+    currentTemperature: 22.0,
+    currentHumidity: 45,
+    averageFanSpeed: 1200,
+    currentPowerConsumption: 8.0,
+    totalEnergyToday: 150.0,
+    fanSpeeds: [1150, 1200, 1250],
+    efficiencyRating: 4,
+    totalRuntimeToday: 18.75
+  },
+  // ... other units
+];
+```
+
+## 🧪 Testing
+
+The project uses Vitest for testing:
 
 ```bash
+# Run all tests
 pnpm test
+
+# Run tests in watch mode
+pnpm test --watch
+
+# Run tests with coverage
+pnpm test --coverage
 ```
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
+## 📦 Building for Production
 
 ```bash
-pnpm lint
-pnpm format
-pnpm check
+# Build the application
+pnpm build
+
+# Preview the production build
+pnpm serve
 ```
 
+The built application will be in the `dist/` directory, ready for deployment to any static hosting service.
 
-## Shadcn
+## 🚀 Deployment
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+The application can be deployed to any static hosting service:
 
-```bash
-pnpx shadcn@latest add button
-```
+- **Vercel**: Connect your GitHub repository for automatic deployments
+- **Netlify**: Drag and drop the `dist` folder or connect your repository
+- **AWS S3**: Upload the `dist` folder to an S3 bucket with static website hosting
+- **GitHub Pages**: Use GitHub Actions to build and deploy
 
+## 🤝 Contributing
 
-## T3Env
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit your changes: `git commit -m 'Add new feature'`
+4. Push to the branch: `git push origin feature/new-feature`
+5. Submit a pull request
 
-- You can use T3Env to add type safety to your environment variables.
-- Add Environment variables to the `src/env.mjs` file.
-- Use the environment variables in your code.
+## 📝 License
 
-### Usage
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-```ts
-import { env } from "@/env";
+## 🔗 Related Links
 
-console.log(env.VITE_APP_TITLE);
-```
+- [TanStack Start Documentation](https://tanstack.com/start)
+- [React 19 Documentation](https://react.dev)
+- [Shadcn/ui Components](https://ui.shadcn.com)
+- [Tailwind CSS Documentation](https://tailwindcss.com)
+- [Recharts Documentation](https://recharts.org)
 
+## 📞 Support
 
+For support and questions, please open an issue in the GitHub repository or contact the development team.
 
+---
 
-
-
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add another a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import { Link } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/people",
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json() as Promise<{
-      results: {
-        name: string;
-      }[];
-    }>;
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData();
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    );
-  },
-});
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-### React-Query
-
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-pnpm add @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// ...
-
-const queryClient = new QueryClient();
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  );
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query";
-
-import "./App.css";
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  });
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-pnpm add @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-function App() {
-  const count = useStore(countStore);
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store, Derived } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-});
-doubledStore.mount();
-
-function App() {
-  const count = useStore(countStore);
-  const doubledCount = useStore(doubledStore);
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+Built with ❤️ using modern web technologies for efficient AHU monitoring and management.

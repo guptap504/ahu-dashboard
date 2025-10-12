@@ -5,8 +5,8 @@ import { HeaderUser } from "@/components/header-user";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const user = {
-  name: "Prashant Gupta",
-  email: "prashant@garvata.com",
+  name: "Demo User",
+  email: "demo@garvata.com",
   avatar: "",
 };
 
