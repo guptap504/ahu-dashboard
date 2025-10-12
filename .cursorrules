@@ -1,7 +1,211 @@
-# shadcn instructions
+# AHU Dashboard - Cursor Rules
 
-Use the latest version of Shadcn to install new components, like this command to add a button component:
+## Project Overview
+This is a modern React dashboard application for AHU (Air Handling Unit) monitoring and management. The project uses TanStack Start with React 19, TypeScript, and a comprehensive UI component library.
 
-```bash
-pnpx shadcn@latest add button
+## Tech Stack & Architecture
+
+### Core Framework
+- **TanStack Start** - Full-stack React framework with SSR capabilities
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Strict type checking enabled
+- **Vite** - Build tool and dev server
+
+### Routing & Data Fetching
+- **TanStack Router** - File-based routing with type-safe navigation
+- **TanStack Query** - Server state management and caching
+- **TanStack Table** - Advanced data table functionality
+
+### UI & Styling
+- **Shadcn/ui** - Component library with Radix UI primitives
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **Radix UI** - Unstyled, accessible UI primitives
+- **Lucide React** - Icon library
+- **Recharts** - Data visualization and charts
+
+### Development Tools
+- **Biome** - Linting and formatting (replaces ESLint/Prettier)
+- **Vitest** - Testing framework
+- **pnpm** - Package manager
+
+## Project Structure
+
 ```
+src/
+├── components/           # Reusable UI components
+│   ├── ui/              # Shadcn/ui components
+│   └── *.tsx            # Custom components
+├── routes/              # File-based routing
+│   ├── __root.tsx       # Root layout
+│   ├── index.tsx        # Home page
+│   └── demo/            # Demo/example routes
+├── data/                # Static data and mock data
+├── hooks/               # Custom React hooks
+├── integrations/        # Third-party integrations
+├── lib/                 # Utility functions
+└── styles.css           # Global styles and CSS variables
+```
+
+## Coding Standards
+
+### TypeScript
+- Use strict TypeScript configuration
+- Prefer explicit types over `any`
+- Use proper type definitions for all props and state
+- Leverage TypeScript's path mapping (`@/*` for `src/*`)
+
+### React Patterns
+- Use functional components with hooks
+- Prefer composition over inheritance
+- Use proper key props for list items
+- Implement proper error boundaries where needed
+
+### Component Organization
+- Keep components small and focused
+- Use proper prop interfaces
+- Follow the single responsibility principle
+- Place reusable components in `src/components/ui/`
+
+### Styling Guidelines
+- Use Tailwind CSS classes for styling
+- Leverage CSS variables for theming
+- Use the `cn()` utility for conditional classes
+- Follow the design system defined in `styles.css`
+
+## File Naming Conventions
+- Use kebab-case for file names: `app-sidebar.tsx`
+- Use PascalCase for component names: `AppSidebar`
+- Use descriptive names that indicate purpose
+- Group related files in appropriate directories
+
+## Import Organization
+- External libraries first
+- Internal imports using path aliases
+- Use absolute imports with `@/` prefix
+- Group imports logically (React, UI, utils, etc.)
+
+## Shadcn/ui Usage
+- Use the latest version: `pnpx shadcn@latest add [component]`
+- Components are located in `src/components/ui/`
+- Customize components by editing the generated files
+- Follow Shadcn's component patterns and API
+
+## State Management
+- Use TanStack Query for server state
+- Use React's built-in state for local component state
+- Consider TanStack Store for complex client state if needed
+- Avoid prop drilling - use context or state management libraries
+
+## Data Fetching
+- Use TanStack Query for all API calls
+- Implement proper loading and error states
+- Use query keys consistently
+- Leverage route loaders for initial data
+
+## Testing
+- Write tests for utility functions
+- Test component behavior, not implementation details
+- Use Vitest for unit and integration tests
+- Mock external dependencies appropriately
+
+## Performance
+- Use React.memo for expensive components
+- Implement proper key props for lists
+- Lazy load routes when appropriate
+- Optimize bundle size with proper imports
+
+## Accessibility
+- Use semantic HTML elements
+- Implement proper ARIA attributes
+- Ensure keyboard navigation works
+- Test with screen readers
+
+## Environment Variables
+- Use T3Env for type-safe environment variables
+- Define variables in `src/env.ts`
+- Use the `env` object for accessing variables
+- Never commit sensitive data
+
+## Git Workflow
+- Use descriptive commit messages
+- Keep commits focused and atomic
+- Use conventional commit format when possible
+- Review changes before committing
+
+## Common Patterns
+
+### Component Structure
+```tsx
+import { type ComponentProps } from "react"
+import { cn } from "@/lib/utils"
+
+interface ComponentProps {
+  // Define props here
+}
+
+export function Component({ className, ...props }: ComponentProps) {
+  return (
+    <div className={cn("base-classes", className)} {...props}>
+      {/* Component content */}
+    </div>
+  )
+}
+```
+
+### Data Fetching with TanStack Query
+```tsx
+import { useQuery } from "@tanstack/react-query"
+
+export function DataComponent() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchData,
+  })
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+
+  return <div>{/* Render data */}</div>
+}
+```
+
+### Route Definition
+```tsx
+import { createFileRoute } from "@tanstack/react-router"
+
+export const Route = createFileRoute("/path")({
+  component: Component,
+  loader: async () => {
+    // Load data here
+    return data
+  },
+})
+```
+
+## Development Commands
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm test` - Run tests
+- `pnpm lint` - Run linter
+- `pnpm format` - Format code
+- `pnpm check` - Run all checks
+
+## Best Practices
+1. Always use TypeScript for type safety
+2. Follow the established file structure
+3. Use Shadcn/ui components when possible
+4. Implement proper error handling
+5. Write clean, readable code
+6. Test your changes thoroughly
+7. Follow accessibility guidelines
+8. Optimize for performance
+9. Use proper naming conventions
+10. Keep components small and focused
+
+## Notes
+- This is a dashboard application for AHU monitoring
+- The project uses modern React patterns and best practices
+- All UI components should be accessible and responsive
+- Follow the established design system and color scheme
+- Use the provided utility functions and hooks
+- Maintain consistency with the existing codebase

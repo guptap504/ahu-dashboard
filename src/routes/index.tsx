@@ -7,7 +7,7 @@ import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import data from "../data/data.json";
+import { ahuDeployments } from "../data/ahu-data";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -18,7 +18,7 @@ function App() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--sidebar-width": "calc(var(--spacing) * 56)",
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }>
@@ -32,7 +32,7 @@ function App() {
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-              <DataTable data={data} />
+              <DataTable data={ahuDeployments} />
             </div>
           </div>
         </div>

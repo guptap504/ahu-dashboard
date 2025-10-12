@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
+import { Route as AhuAhuIdRouteImport } from './routes/ahu/$ahuId'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
@@ -36,6 +37,11 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
 const DemoTableRoute = DemoTableRouteImport.update({
   id: '/demo/table',
   path: '/demo/table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AhuAhuIdRoute = AhuAhuIdRouteImport.update({
+  id: '/ahu/$ahuId',
+  path: '/ahu/$ahuId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
@@ -91,6 +97,7 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ahu/$ahuId': typeof AhuAhuIdRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ahu/$ahuId': typeof AhuAhuIdRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -122,6 +130,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ahu/$ahuId': typeof AhuAhuIdRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ahu/$ahuId'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/api/names'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ahu/$ahuId'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/api/names'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ahu/$ahuId'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/api/names'
@@ -185,6 +197,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AhuAhuIdRoute: typeof AhuAhuIdRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/table'
       fullPath: '/demo/table'
       preLoaderRoute: typeof DemoTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ahu/$ahuId': {
+      id: '/ahu/$ahuId'
+      path: '/ahu/$ahuId'
+      fullPath: '/ahu/$ahuId'
+      preLoaderRoute: typeof AhuAhuIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/start/server-funcs': {
@@ -297,6 +317,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AhuAhuIdRoute: AhuAhuIdRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
