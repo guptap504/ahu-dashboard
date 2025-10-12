@@ -95,7 +95,3 @@ The application can be deployed to any static hosting service:
 - **Vercel**: Connect your GitHub repository for automatic deployments
 - **Netlify**: Drag and drop the `dist` folder or connect your repository
 - **AWS S3**: Upload the `dist` folder to an S3 bucket with static website hosting
-
----
-
-Built with ❤️ using modern web technologies for efficient AHU monitoring and management.
