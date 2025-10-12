@@ -72,11 +72,11 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Power Consumption & Fan Speed</CardTitle>
-        <CardDescription>
+        <CardTitle>Power v/s Fan Speed</CardTitle>
+        {/* <CardDescription>
           <span className="hidden @[540px]/card:block">Dual-axis chart showing power consumption and average AHU speed</span>
           <span className="@[540px]/card:hidden">Power & Speed trends</span>
-        </CardDescription>
+        </CardDescription> */}
         <CardAction>
           <ToggleGroup
             type="single"

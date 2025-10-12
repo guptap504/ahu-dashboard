@@ -290,3 +290,17 @@ export function getTotalEnergyConsumption(): number {
 export function getAHUById(id: string): AHUData | undefined {
   return ahuDeployments.find(ahu => ahu.id === id);
 }
+
+export function getOnlineAHUCount(): number {
+  return ahuDeployments.filter(ahu => ahu.status === 'online').length;
+}
+
+export function getTotalAHUCount(): number {
+  return ahuDeployments.length;
+}
+
+export function getAHUOnlinePercentage(): number {
+  const total = getTotalAHUCount();
+  if (total === 0) return 0;
+  return (getOnlineAHUCount() / total) * 100;
+}

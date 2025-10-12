@@ -1,17 +1,9 @@
 import {
   IconBuilding,
-  IconCamera,
-  IconChartBar,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconHelp,
   IconHome, 
-  IconReport,
   IconSearch,
-  IconSettings,
-  IconWind
+  IconSettings
 } from "@tabler/icons-react";
 import type * as React from "react";
 
@@ -41,25 +33,25 @@ const data = {
       icon: IconHome,
       isActive: true,
     },
-    {
-      title: "AHU Units",
-      url: "#",
-      icon: IconWind,
-      items: [
-        {
-          title: "All Units",
-          url: "/",
-        },
-        {
-          title: "Online Units",
-          url: "#",
-        },
-        {
-          title: "Offline Units",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "AHU Units",
+    //   url: "#",
+    //   icon: IconWind,
+    //   items: [
+    //     {
+    //       title: "All Units",
+    //       url: "/",
+    //     },
+    //     {
+    //       title: "Online Units",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Offline Units",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
     // {
     //   title: "Analytics",
     //   url: "#",

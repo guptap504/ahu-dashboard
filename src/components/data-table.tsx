@@ -8,7 +8,6 @@ import {
   IconCircleCheckFilled,
   IconLayoutColumns,
   IconMapPin,
-  IconPlus,
   IconSettings,
   IconWind,
 } from "@tabler/icons-react";
@@ -16,6 +15,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type {
   ColumnDef,
   ColumnFiltersState,
+  FilterFn,
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -33,7 +33,6 @@ import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -44,6 +43,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AHUData } from "@/data/ahu-data";
+
+// Define a simple filter function for the table
+const fuzzyFilter: FilterFn<AHUData> = (row, columnId, value) => {
+  const search = value.toLowerCase();
+  const cellValue = row.getValue(columnId);
+  return String(cellValue).toLowerCase().includes(search);
+};
 
 export const schema = {
   id: "string",
@@ -56,29 +62,6 @@ export const schema = {
 } as const;
 
 const columns: ColumnDef<AHUData>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: "AHU Name",
@@ -104,7 +87,7 @@ const columns: ColumnDef<AHUData>[] = [
     accessorKey: "numberOfFans",
     header: "Number of Fans",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         <IconWind className="size-4 text-muted-foreground" />
         <span>{row.original.numberOfFans}</span>
       </div>
@@ -114,7 +97,7 @@ const columns: ColumnDef<AHUData>[] = [
     accessorKey: "averageFanSpeed",
     header: "Avg Fan Speed Today",
     cell: ({ row }) => (
-      <div className="text-right">
+      <div className="text-center">
         <span className="font-mono">{row.original.averageFanSpeed.toFixed(0)} RPM</span>
       </div>
     ),
@@ -123,7 +106,7 @@ const columns: ColumnDef<AHUData>[] = [
     accessorKey: "totalEnergyToday",
     header: "Energy Consumption Today",
     cell: ({ row }) => (
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-center gap-2">
         <IconBolt className="size-4 text-muted-foreground" />
         <span className="font-mono">{row.original.totalEnergyToday.toFixed(1)} kWh</span>
       </div>
@@ -133,19 +116,20 @@ const columns: ColumnDef<AHUData>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <Badge variant={row.original.status === "online" ? "default" : "secondary"} className="px-2">
-        {row.original.status === "online" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 mr-1" />
-        ) : null}
-        {row.original.status === "online" ? "Online" : "Offline"}
-      </Badge>
+      <div className="flex justify-center">
+        <Badge variant={row.original.status === "online" ? "default" : "secondary"} className="px-2">
+          {row.original.status === "online" ? (
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 mr-1" />
+          ) : null}
+          {row.original.status === "online" ? "Online" : "Offline"}
+        </Badge>
+      </div>
     ),
   },
 ];
 
 export function DataTable({ data: initialData }: { data: AHUData[] }) {
   const [data] = React.useState(() => initialData);
-  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -161,13 +145,10 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
     state: {
       sorting,
       columnVisibility,
-      rowSelection,
       columnFilters,
       pagination,
     },
     getRowId: (row) => row.id,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -178,6 +159,9 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
   });
 
   const handleRowClick = (ahuId: string) => {
@@ -220,10 +204,10 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add AHU</span>
-          </Button>
+          </Button> */}
         </div>
       </div>
       
@@ -234,8 +218,13 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
+                    const isLeftAligned = header.column.id === "name" || header.column.id === "location";
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
+                      <TableHead 
+                        key={header.id} 
+                        colSpan={header.colSpan} 
+                        className={isLeftAligned ? "text-left" : "text-center"}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -250,14 +239,19 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleRowClick(row.original.id)}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      const isLeftAligned = cell.column.id === "name" || cell.column.id === "location";
+                      return (
+                        <TableCell 
+                          key={cell.id} 
+                          className={isLeftAligned ? "text-left" : "text-center"}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (
@@ -271,11 +265,7 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
           </Table>
         </div>
         
-        <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-            selected.
-          </div>
+        <div className="flex items-center justify-end px-4">
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
