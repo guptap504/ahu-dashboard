@@ -1,10 +1,4 @@
-import {
-  IconBuilding,
-  IconHelp,
-  IconHome, 
-  IconSearch,
-  IconSettings
-} from "@tabler/icons-react";
+import { IconBuilding, IconHelp, IconHome, IconSearch, IconSettings } from "@tabler/icons-react";
 import type * as React from "react";
 
 import { NavMain } from "@/components/nav-main";

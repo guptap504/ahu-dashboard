@@ -12,13 +12,7 @@ import {
   IconWind,
 } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  FilterFn,
-  SortingState,
-  VisibilityState,
-} from "@tanstack/react-table";
+import type { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState } from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
@@ -42,7 +36,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AHUData } from "@/data/ahu-data";
+import type { AHUData } from "@/data/ahu-data";
 
 // Define a simple filter function for the table
 const fuzzyFilter: FilterFn<AHUData> = (row, columnId, value) => {
@@ -210,7 +204,7 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
           </Button> */}
         </div>
       </div>
-      
+
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
         <div className="overflow-hidden rounded-lg border">
           <Table>
@@ -220,14 +214,11 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
                   {headerGroup.headers.map((header) => {
                     const isLeftAligned = header.column.id === "name" || header.column.id === "location";
                     return (
-                      <TableHead 
-                        key={header.id} 
-                        colSpan={header.colSpan} 
-                        className={isLeftAligned ? "text-left" : "text-center"}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={isLeftAligned ? "text-left" : "text-center"}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );
                   })}
@@ -244,10 +235,7 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
                     {row.getVisibleCells().map((cell) => {
                       const isLeftAligned = cell.column.id === "name" || cell.column.id === "location";
                       return (
-                        <TableCell 
-                          key={cell.id} 
-                          className={isLeftAligned ? "text-left" : "text-center"}
-                        >
+                        <TableCell key={cell.id} className={isLeftAligned ? "text-left" : "text-center"}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       );
@@ -264,7 +252,7 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
             </TableBody>
           </Table>
         </div>
-        
+
         <div className="flex items-center justify-end px-4">
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
@@ -334,4 +322,3 @@ export function DataTable({ data: initialData }: { data: AHUData[] }) {
     </div>
   );
 }
-

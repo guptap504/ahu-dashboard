@@ -30,11 +30,10 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile]);
 
-
   const filteredData = React.useMemo(() => {
     const now = new Date();
     let startTime: Date;
-    
+
     if (timeRange === "today") {
       // Today: from midnight today
       startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -48,9 +47,9 @@ export function ChartAreaInteractive() {
       // Default to today
       startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     }
-    
+
     const startTimeMs = startTime.getTime();
-    
+
     return timeSeriesData
       .filter((item) => new Date(item.timestamp).getTime() >= startTimeMs)
       .map((item) => {
@@ -112,11 +111,7 @@ export function ChartAreaInteractive() {
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer config={chartConfig} className="aspect-auto h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
-              key={timeRange}
-              data={filteredData} 
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
+            <LineChart key={timeRange} data={filteredData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"

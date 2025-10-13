@@ -28,7 +28,10 @@ export function HeaderUser({
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="rounded-full">
-              {user.name.split(' ').map(n => n[0]).join('')}
+              {user.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
             </AvatarFallback>
           </Avatar>
         </Button>

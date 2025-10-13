@@ -1,20 +1,20 @@
-import { 
-  IconArrowLeft, 
-  IconBolt, 
-  IconClock, 
-  IconDroplet, 
-  IconPower, 
+import {
+  IconArrowLeft,
+  IconBolt,
+  IconClock,
+  IconDroplet,
+  IconPower,
   IconSettings,
   IconStar,
-  IconTemperature, 
-  IconWind 
+  IconTemperature,
+  IconWind,
 } from "@tabler/icons-react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -26,7 +26,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -48,7 +55,7 @@ export const Route = createFileRoute("/ahu/$ahuId")({
 
 function AHUDetail() {
   const { ahu } = Route.useLoaderData();
-  const [isOnline, setIsOnline] = useState(ahu.status === 'online');
+  const [isOnline, setIsOnline] = useState(ahu.status === "online");
   const [fanSpeeds, setFanSpeeds] = useState(ahu.fanSpeeds);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -71,7 +78,7 @@ function AHUDetail() {
   };
 
   const handleReset = () => {
-    setIsOnline(ahu.status === 'online');
+    setIsOnline(ahu.status === "online");
     setFanSpeeds(ahu.fanSpeeds);
     setHasChanges(false);
   };
@@ -121,39 +128,39 @@ function AHUDetail() {
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             {/* Breadcrumb */}
             <div className="px-4 lg:px-6">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Portfolio</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{ahu.name}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/">Portfolio</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{ahu.name}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
             </div>
 
             {/* Header */}
             <div className="px-4 lg:px-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold">{ahu.name}</h1>
-                <p className="text-muted-foreground">{ahu.location}</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold">{ahu.name}</h1>
+                  <p className="text-muted-foreground">{ahu.location}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={isOnline ? "default" : "secondary"} className="px-3 py-1">
+                    <IconPower className="size-3 mr-1" />
+                    {isOnline ? "Online" : "Offline"}
+                  </Badge>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/">
+                      <IconArrowLeft className="size-4 mr-2" />
+                      Back to Portfolio
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant={isOnline ? "default" : "secondary"} className="px-3 py-1">
-                  <IconPower className="size-3 mr-1" />
-                  {isOnline ? "Online" : "Offline"}
-                </Badge>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/">
-                    <IconArrowLeft className="size-4 mr-2" />
-                    Back to Portfolio
-                  </Link>
-                </Button>
-              </div>
-            </div>
             </div>
 
             {/* Metadata Section */}
@@ -201,7 +208,7 @@ function AHUDetail() {
                     <p className="text-xs text-muted-foreground">Current reading</p>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Humidity</CardTitle>
@@ -212,7 +219,7 @@ function AHUDetail() {
                     <p className="text-xs text-muted-foreground">Current reading</p>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Average Fan Speed</CardTitle>
@@ -223,7 +230,7 @@ function AHUDetail() {
                     <p className="text-xs text-muted-foreground">Current average</p>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Power Consumption</CardTitle>
@@ -234,7 +241,7 @@ function AHUDetail() {
                     <p className="text-xs text-muted-foreground">Current usage</p>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Runtime Today</CardTitle>
@@ -245,7 +252,7 @@ function AHUDetail() {
                     <p className="text-xs text-muted-foreground">Total hours</p>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Efficiency Rating</CardTitle>
@@ -254,7 +261,10 @@ function AHUDetail() {
                   <CardContent>
                     <div className="text-2xl font-bold flex items-center gap-1">
                       {Array.from({ length: ahu.efficiencyRating }, (_, i) => (
-                        <IconStar key={`filled-star-${ahu.id}-${i}`} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                        <IconStar
+                          key={`filled-star-${ahu.id}-${i}`}
+                          className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                        />
                       ))}
                       {Array.from({ length: 5 - ahu.efficiencyRating }, (_, i) => (
                         <IconStar key={`empty-star-${ahu.id}-${i}`} className="h-5 w-5 text-gray-300" />
@@ -280,10 +290,7 @@ function AHUDetail() {
                       <p className="text-sm font-medium">Master Power</p>
                       <p className="text-xs text-muted-foreground">Turn the entire AHU on or off</p>
                     </div>
-                    <Switch
-                      checked={isOnline}
-                      onCheckedChange={handleMasterToggle}
-                    />
+                    <Switch checked={isOnline} onCheckedChange={handleMasterToggle} />
                   </div>
 
                   <Separator />
@@ -294,10 +301,10 @@ function AHUDetail() {
                     {Array.from({ length: ahu.numberOfFans }, (_, index) => (
                       <div key={`fan-${ahu.id}-${index}`} className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className={`text-sm font-medium ${!isOnline ? 'text-muted-foreground' : ''}`}>
+                          <span className={`text-sm font-medium ${!isOnline ? "text-muted-foreground" : ""}`}>
                             Fan {index + 1}
                           </span>
-                          <span className={`text-sm ${!isOnline ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                          <span className={`text-sm ${!isOnline ? "text-muted-foreground" : "text-muted-foreground"}`}>
                             {fanSpeeds[index].toFixed(0)} RPM
                           </span>
                         </div>
@@ -308,7 +315,7 @@ function AHUDetail() {
                           min={0}
                           step={50}
                           disabled={!isOnline}
-                          className={`w-full ${!isOnline ? 'opacity-50' : ''}`}
+                          className={`w-full ${!isOnline ? "opacity-50" : ""}`}
                         />
                       </div>
                     ))}
@@ -318,22 +325,19 @@ function AHUDetail() {
                   <div className="flex items-center gap-2 pt-4">
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button disabled={!hasChanges}>
-                          Save Changes
-                        </Button>
+                        <Button disabled={!hasChanges}>Save Changes</Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>Save AHU Settings</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to save these changes? This will update the AHU settings and may affect the current operation of the air handling unit.
+                            Are you sure you want to save these changes? This will update the AHU settings and may
+                            affect the current operation of the air handling unit.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleSave}>
-                            Save Changes
-                          </AlertDialogAction>
+                          <AlertDialogAction onClick={handleSave}>Save Changes</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -347,14 +351,13 @@ function AHUDetail() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Reset AHU Settings</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to reset all changes? This will restore the AHU settings to their original values and discard any unsaved changes.
+                            Are you sure you want to reset all changes? This will restore the AHU settings to their
+                            original values and discard any unsaved changes.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleReset}>
-                            Reset Changes
-                          </AlertDialogAction>
+                          <AlertDialogAction onClick={handleReset}>Reset Changes</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -383,7 +386,7 @@ function AHUDetail() {
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
-                            tickFormatter={(value, index) => index % 4 === 0 ? value : ""}
+                            tickFormatter={(value, index) => (index % 4 === 0 ? value : "")}
                           />
                           <YAxis
                             yAxisId="left"
@@ -413,7 +416,8 @@ function AHUDetail() {
                                   return value;
                                 }}
                                 formatter={(value, name) => {
-                                  if (name === "ahuTemperature") return ["Temperature - ", `${Number(value).toFixed(1)}°C`];
+                                  if (name === "ahuTemperature")
+                                    return ["Temperature - ", `${Number(value).toFixed(1)}°C`];
                                   if (name === "ahuHumidity") return ["Humidity - ", `${Number(value).toFixed(1)}%`];
                                   return [value, name];
                                 }}
@@ -462,7 +466,7 @@ function AHUDetail() {
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
-                            tickFormatter={(value, index) => index % 4 === 0 ? value : ""}
+                            tickFormatter={(value, index) => (index % 4 === 0 ? value : "")}
                           />
                           <YAxis
                             yAxisId="left"
@@ -492,8 +496,10 @@ function AHUDetail() {
                                   return value;
                                 }}
                                 formatter={(value, name) => {
-                                  if (name === "ahuSpeed") return ["Average Speed - ", `${Number(value).toFixed(0)} RPM`];
-                                  if (name === "ahuPower") return ["Power Consumption - ", `${Number(value).toFixed(1)} kW`];
+                                  if (name === "ahuSpeed")
+                                    return ["Average Speed - ", `${Number(value).toFixed(0)} RPM`];
+                                  if (name === "ahuPower")
+                                    return ["Power Consumption - ", `${Number(value).toFixed(1)} kW`];
                                   return [value, name];
                                 }}
                                 indicator="dot"

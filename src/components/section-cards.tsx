@@ -1,8 +1,24 @@
-import { IconBolt, IconDeviceDesktop, IconDroplet, IconTemperature, IconTrendingDown, IconTrendingUp, IconWind } from "@tabler/icons-react";
+import {
+  IconBolt,
+  IconDeviceDesktop,
+  IconDroplet,
+  IconTemperature,
+  IconTrendingDown,
+  IconTrendingUp,
+  IconWind,
+} from "@tabler/icons-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAHUOnlinePercentage, getAverageFanSpeed, getAverageHumidity, getAverageTemperature, getOnlineAHUCount, getTotalAHUCount, getTotalEnergyConsumption } from "@/data/ahu-data";
+import {
+  getAHUOnlinePercentage,
+  getAverageFanSpeed,
+  getAverageHumidity,
+  getAverageTemperature,
+  getOnlineAHUCount,
+  getTotalAHUCount,
+  getTotalEnergyConsumption,
+} from "@/data/ahu-data";
 
 export function SectionCards() {
   const avgTemperature = getAverageTemperature();
@@ -31,13 +47,11 @@ export function SectionCards() {
             {onlineAHUs}/{totalAHUs}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              {onlinePercentage.toFixed(1)}%
-            </Badge>
+            <Badge variant="outline">{onlinePercentage.toFixed(1)}%</Badge>
           </CardAction>
         </CardHeader>
       </Card>
-      
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-2">
@@ -50,12 +64,13 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               {temperatureTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
-              {temperatureTrend > 0 ? '+' : ''}{temperatureTrend.toFixed(1)}°C
+              {temperatureTrend > 0 ? "+" : ""}
+              {temperatureTrend.toFixed(1)}°C
             </Badge>
           </CardAction>
         </CardHeader>
       </Card>
-      
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-2">
@@ -68,12 +83,13 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               {humidityTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
-              {humidityTrend > 0 ? '+' : ''}{humidityTrend.toFixed(1)}%
+              {humidityTrend > 0 ? "+" : ""}
+              {humidityTrend.toFixed(1)}%
             </Badge>
           </CardAction>
         </CardHeader>
       </Card>
-      
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-2">
@@ -86,12 +102,13 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               {fanSpeedTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
-              {fanSpeedTrend > 0 ? '+' : ''}{fanSpeedTrend.toFixed(1)}%
+              {fanSpeedTrend > 0 ? "+" : ""}
+              {fanSpeedTrend.toFixed(1)}%
             </Badge>
           </CardAction>
         </CardHeader>
       </Card>
-      
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="flex items-center gap-2">
@@ -104,7 +121,8 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               {energyTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
-              {energyTrend > 0 ? '+' : ''}{energyTrend.toFixed(1)}%
+              {energyTrend > 0 ? "+" : ""}
+              {energyTrend.toFixed(1)}%
             </Badge>
           </CardAction>
         </CardHeader>

@@ -1,9 +1,6 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
@@ -42,15 +39,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
-        <TanStackDevtools
+        {/* <TanStackDevtools
           config={{
             position: "bottom-right",
           }}
@@ -61,7 +53,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
             TanStackQueryDevtools,
           ]}
-        />
+        /> */}
         <Scripts />
       </body>
     </html>
