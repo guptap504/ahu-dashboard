@@ -1,5 +1,6 @@
 import {
   IconBolt,
+  IconCurrencyRupee,
   IconDeviceDesktop,
   IconInfoCircle,
   IconLeaf,
@@ -18,6 +19,20 @@ import {
   getTotalEnergySaved,
 } from "@/data/ahu-data";
 
+// Helper function to format currency in INR with lakhs and crores
+function formatCurrencyINR(amount: number): string {
+  const crore = 10000000; // 1 crore = 10 million
+  const lakh = 100000; // 1 lakh = 100 thousand
+
+  if (amount >= crore) {
+    return `₹${(amount / crore).toFixed(1)} Cr`;
+  } else if (amount >= lakh) {
+    return `₹${(amount / lakh).toFixed(1)} L`;
+  } else {
+    return `₹${amount.toFixed(0)}`;
+  }
+}
+
 export function SectionCards() {
   const totalEnergy = getTotalEnergyConsumption();
   const totalEnergySaved = getTotalEnergySaved();
@@ -25,9 +40,13 @@ export function SectionCards() {
   const totalAHUs = getTotalAHUCount();
   const onlinePercentage = getAHUOnlinePercentage();
 
+  // Calculate money saved (energy saved * 10)
+  const moneySaved = totalEnergySaved * 1000 * 10;
+
   // Calculate trend indicators (mock data for now)
   const energyTrend = -3.1; // -3.1% vs yesterday
   const savingsTrend = 2.4; // +2.4% vs yesterday (improved optimization)
+  const moneyTrend = 2.4; // Same as savings trend since it's proportional
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @3xl/main:grid-cols-3">
@@ -87,6 +106,33 @@ export function SectionCards() {
               {savingsTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
               {savingsTrend > 0 ? "+" : ""}
               {savingsTrend.toFixed(1)}%
+            </Badge>
+          </CardAction>
+        </CardHeader>
+      </Card>
+
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-2">
+            <IconCurrencyRupee className="size-4" />
+            Money Saved Today
+            <Tooltip>
+              <TooltipTrigger>
+                <IconInfoCircle className="size-3 text-muted-foreground hover:text-foreground transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Cost savings from energy efficiency (₹10 per MWh saved)</p>
+              </TooltipContent>
+            </Tooltip>
+          </CardDescription>
+          <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
+            {formatCurrencyINR(moneySaved)}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              {moneyTrend > 0 ? <IconTrendingUp /> : <IconTrendingDown />}
+              {moneyTrend > 0 ? "+" : ""}
+              {moneyTrend.toFixed(1)}%
             </Badge>
           </CardAction>
         </CardHeader>

@@ -169,8 +169,7 @@ function AHUDetail() {
                     variant={isOnline ? "default" : "secondary"}
                     size="sm"
                     onClick={handleMasterPowerClick}
-                    className="px-3 py-1"
-                  >
+                    className="px-3 py-1">
                     <IconPower className="size-3 mr-1" />
                     {isOnline ? "Turn Off" : "Turn On"}
                   </Button>
@@ -349,86 +348,6 @@ function AHUDetail() {
           {/* Historical Data Charts */}
           <div className="px-4 lg:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Temperature and Humidity Chart */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Temperature & Humidity</CardTitle>
-                  <CardDescription>24-hour temperature and humidity trends</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer config={temperatureHumidityConfig} className="aspect-auto h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={historicalData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                          dataKey="time"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          minTickGap={32}
-                          tickFormatter={(value, index) => (index % 4 === 0 ? value : "")}
-                        />
-                        <YAxis
-                          yAxisId="left"
-                          orientation="left"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          tickFormatter={(value) => `${value}°C`}
-                        />
-                        <YAxis
-                          yAxisId="right"
-                          orientation="right"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          tickFormatter={(value) => `${value}%`}
-                        />
-                        <ChartTooltip
-                          cursor={false}
-                          content={
-                            <ChartTooltipContent
-                              labelFormatter={(value, payload) => {
-                                if (payload?.[0]) {
-                                  const data = payload[0].payload;
-                                  return `${data.time}`;
-                                }
-                                return value;
-                              }}
-                              formatter={(value, name) => {
-                                if (name === "ahuTemperature")
-                                  return ["Temperature - ", `${Number(value).toFixed(1)}°C`];
-                                if (name === "ahuHumidity") return ["Humidity - ", `${Number(value).toFixed(1)}%`];
-                                return [value, name];
-                              }}
-                              indicator="dot"
-                            />
-                          }
-                        />
-                        <Line
-                          yAxisId="left"
-                          dataKey="ahuTemperature"
-                          type="monotone"
-                          stroke="#3b82f6"
-                          strokeWidth={3}
-                          dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
-                        />
-                        <Line
-                          yAxisId="right"
-                          dataKey="ahuHumidity"
-                          type="monotone"
-                          stroke="#10b981"
-                          strokeWidth={3}
-                          dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: "#10b981", strokeWidth: 2 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-
               {/* Fan Speed and Power Chart */}
               <Card>
                 <CardHeader>
@@ -502,6 +421,85 @@ function AHUDetail() {
                           strokeWidth={3}
                           dot={{ fill: "#f59e0b", strokeWidth: 2, r: 4 }}
                           activeDot={{ r: 6, stroke: "#f59e0b", strokeWidth: 2 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+              {/* Temperature and Humidity Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Temperature & Humidity</CardTitle>
+                  <CardDescription>24-hour temperature and humidity trends</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={temperatureHumidityConfig} className="aspect-auto h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={historicalData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="time"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          minTickGap={32}
+                          tickFormatter={(value, index) => (index % 4 === 0 ? value : "")}
+                        />
+                        <YAxis
+                          yAxisId="left"
+                          orientation="left"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          tickFormatter={(value) => `${value}°C`}
+                        />
+                        <YAxis
+                          yAxisId="right"
+                          orientation="right"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          tickFormatter={(value) => `${value}%`}
+                        />
+                        <ChartTooltip
+                          cursor={false}
+                          content={
+                            <ChartTooltipContent
+                              labelFormatter={(value, payload) => {
+                                if (payload?.[0]) {
+                                  const data = payload[0].payload;
+                                  return `${data.time}`;
+                                }
+                                return value;
+                              }}
+                              formatter={(value, name) => {
+                                if (name === "ahuTemperature")
+                                  return ["Temperature - ", `${Number(value).toFixed(1)}°C`];
+                                if (name === "ahuHumidity") return ["Humidity - ", `${Number(value).toFixed(1)}%`];
+                                return [value, name];
+                              }}
+                              indicator="dot"
+                            />
+                          }
+                        />
+                        <Line
+                          yAxisId="left"
+                          dataKey="ahuTemperature"
+                          type="monotone"
+                          stroke="#3b82f6"
+                          strokeWidth={3}
+                          dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
+                        />
+                        <Line
+                          yAxisId="right"
+                          dataKey="ahuHumidity"
+                          type="monotone"
+                          stroke="#10b981"
+                          strokeWidth={3}
+                          dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: "#10b981", strokeWidth: 2 }}
                         />
                       </LineChart>
                     </ResponsiveContainer>
