@@ -4,7 +4,6 @@ import {
   IconDroplet,
   IconEdit,
   IconPower,
-  IconStar,
   IconTemperature,
   IconWind,
 } from "@tabler/icons-react";
@@ -23,7 +22,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,9 +33,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { getAHUById, timeSeriesData } from "@/data/ahu-data";
 
 export const Route = createFileRoute("/ahu/$ahuId")({
@@ -56,18 +53,41 @@ function AHUDetail() {
   const [isOnline, setIsOnline] = useState(ahu.status === "online");
   const [fanSpeeds, setFanSpeeds] = useState(ahu.fanSpeeds);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showPowerDialog, setShowPowerDialog] = useState(false);
 
-  const handleMasterToggle = (checked: boolean) => {
-    setIsOnline(checked);
-    // Don't change fan speeds when toggling - just disable/enable the controls
-    setHasChanges(true);
+  const handleMasterPowerClick = () => {
+    setShowPowerDialog(true);
   };
+
+  const handlePowerConfirm = () => {
+    setIsOnline(!isOnline);
+    setHasChanges(true);
+    setShowPowerDialog(false);
+    toast.success(`AHU ${!isOnline ? "turned on" : "turned off"} successfully`);
+  };
+
 
   const handleFanSpeedChange = (fanIndex: number, value: number[]) => {
     const newSpeeds = [...fanSpeeds];
     newSpeeds[fanIndex] = value[0];
     setFanSpeeds(newSpeeds);
     setHasChanges(true);
+  };
+
+  const handlePresetChange = (fanIndex: number, preset: string) => {
+    if (preset === "custom") return; // Don't change value if custom is selected
+    const percentage = parseInt(preset, 10);
+    const presetValue = Math.round((percentage / 100) * 1500); // Convert percentage to RPM (0-1500)
+    const newSpeeds = [...fanSpeeds];
+    newSpeeds[fanIndex] = presetValue;
+    setFanSpeeds(newSpeeds);
+    setHasChanges(true);
+  };
+
+  const getPresetValue = (fanSpeed: number) => {
+    const percentage = Math.round(fanSpeed / 1500 * 100);
+    const presets = [0, 25, 50, 75, 100];
+    return presets.includes(percentage) ? percentage.toString() : "custom";
   };
 
   const handleSave = () => {
@@ -145,10 +165,15 @@ function AHUDetail() {
                   <p className="text-muted-foreground">{ahu.location}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={isOnline ? "default" : "secondary"} className="px-3 py-1">
+                  <Button 
+                    variant={isOnline ? "default" : "secondary"} 
+                    size="sm"
+                    onClick={handleMasterPowerClick}
+                    className="px-3 py-1"
+                  >
                     <IconPower className="size-3 mr-1" />
-                    {isOnline ? "Online" : "Offline"}
-                  </Badge>
+                    {isOnline ? "Turn Off" : "Turn On"}
+                  </Button>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/ahu/$ahuId/edit" params={{ ahuId: ahu.id }}>
                       <IconEdit className="size-4 mr-2" />
@@ -189,7 +214,7 @@ function AHUDetail() {
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <IconWind className="h-5 w-5 text-red-500" />
-                        <span className="text-sm font-medium text-muted-foreground">Fan Speed</span>
+                        <span className="text-sm font-medium text-muted-foreground">Avg. Fan Speed</span>
                       </div>
                       <div className="text-3xl font-bold">{ahu.averageFanSpeed.toFixed(0)} RPM</div>
                     </div>
@@ -203,27 +228,6 @@ function AHUDetail() {
                     </div>
                   </div>
 
-                  {/* Secondary metrics in a smaller row */}
-                  <div className="flex justify-center gap-8 mt-6 pt-4 border-t">
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground">Runtime Today</div>
-                      <div className="text-lg font-semibold">{ahu.totalRuntimeToday.toFixed(1)}h</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground">Efficiency</div>
-                      <div className="flex items-center justify-center gap-1">
-                        {Array.from({ length: ahu.efficiencyRating }, (_, i) => (
-                          <IconStar
-                            key={`filled-star-${ahu.id}-${i}`}
-                            className="h-4 w-4 fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                        {Array.from({ length: 5 - ahu.efficiencyRating }, (_, i) => (
-                          <IconStar key={`empty-star-${ahu.id}-${i}`} className="h-4 w-4 text-gray-300" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -233,23 +237,11 @@ function AHUDetail() {
               <Card>
                 <CardHeader>
                   <CardTitle>Control Panel</CardTitle>
-                  <CardDescription>Manage AHU power and fan speeds</CardDescription>
+                  <CardDescription>Manage individual fan speeds</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Master Control */}
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Master Power</p>
-                      <p className="text-xs text-muted-foreground">Turn the entire AHU on or off</p>
-                    </div>
-                    <Switch checked={isOnline} onCheckedChange={handleMasterToggle} />
-                  </div>
-
-                  <Separator />
-
                   {/* Individual Fan Controls */}
                   <div className="space-y-4">
-                    <h4 className="text-sm font-medium">Individual Fan Speed Controls</h4>
                     {Array.from({ length: ahu.numberOfFans }, (_, index) => (
                       <div key={`fan-${ahu.id}-${index}`} className="space-y-2">
                         <div className="flex items-center justify-between">
@@ -260,15 +252,34 @@ function AHUDetail() {
                             {fanSpeeds[index].toFixed(0)} RPM
                           </span>
                         </div>
-                        <Slider
-                          value={[fanSpeeds[index]]}
-                          onValueChange={(value) => handleFanSpeedChange(index, value)}
-                          max={2000}
-                          min={0}
-                          step={50}
-                          disabled={!isOnline}
-                          className={`w-full ${!isOnline ? "opacity-50" : ""}`}
-                        />
+                        <div className="flex items-center gap-3">
+                          <Slider
+                            value={[fanSpeeds[index]]}
+                            onValueChange={(value) => handleFanSpeedChange(index, value)}
+                            max={1500}
+                            min={0}
+                            step={50}
+                            disabled={!isOnline}
+                            className={`flex-1 ${!isOnline ? "opacity-50" : ""}`}
+                          />
+                          <Select
+                            value={getPresetValue(fanSpeeds[index])}
+                            onValueChange={(value) => handlePresetChange(index, value)}
+                            disabled={!isOnline}
+                          >
+                            <SelectTrigger className="w-25">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="0">0%</SelectItem>
+                              <SelectItem value="25">25%</SelectItem>
+                              <SelectItem value="50">50%</SelectItem>
+                              <SelectItem value="75">75%</SelectItem>
+                              <SelectItem value="100">100%</SelectItem>
+                              <SelectItem value="custom">Custom</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -317,6 +328,29 @@ function AHUDetail() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Power Confirmation Dialog */}
+            <AlertDialog open={showPowerDialog} onOpenChange={setShowPowerDialog}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {isOnline ? "Turn Off AHU" : "Turn On AHU"}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {isOnline 
+                      ? "Are you sure you want to turn off this AHU? This will stop all fan operations and may affect the air quality in the building."
+                      : "Are you sure you want to turn on this AHU? This will start all fan operations and begin air circulation."
+                    }
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handlePowerConfirm}>
+                    {isOnline ? "Turn Off" : "Turn On"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             {/* Historical Data Charts */}
             <div className="px-4 lg:px-6">
