@@ -1,10 +1,9 @@
 import {
   IconArrowLeft,
   IconBolt,
-  IconClock,
   IconDroplet,
+  IconEdit,
   IconPower,
-  IconSettings,
   IconStar,
   IconTemperature,
   IconWind,
@@ -13,7 +12,6 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
-import { SiteHeader } from "@/components/site-header";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -121,8 +119,6 @@ function AHUDetail() {
   } satisfies ChartConfig;
 
   return (
-    <div className="flex h-screen flex-col">
-      <SiteHeader />
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="@container/main flex flex-1 flex-col gap-2 overflow-auto">
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -154,6 +150,12 @@ function AHUDetail() {
                     {isOnline ? "Online" : "Offline"}
                   </Badge>
                   <Button variant="outline" size="sm" asChild>
+                    <Link to="/ahu/$ahuId/edit" params={{ ahuId: ahu.id }}>
+                      <IconEdit className="size-4 mr-2" />
+                      Edit Info
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
                     <Link to="/">
                       <IconArrowLeft className="size-4 mr-2" />
                       Back to Portfolio
@@ -163,117 +165,67 @@ function AHUDetail() {
               </div>
             </div>
 
-            {/* Metadata Section */}
+            {/* Hero Stats Bar */}
             <div className="px-4 lg:px-6">
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <IconSettings className="size-5" />
-                    AHU Specifications
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Model</p>
-                      <p className="text-sm">{ahu.model}</p>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <IconTemperature className="h-5 w-5 text-blue-500" />
+                        <span className="text-sm font-medium text-muted-foreground">Temperature</span>
+                      </div>
+                      <div className="text-3xl font-bold">{ahu.currentTemperature.toFixed(1)}°C</div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Serial Number</p>
-                      <p className="text-sm font-mono">{ahu.serialNumber}</p>
+
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <IconDroplet className="h-5 w-5 text-green-500" />
+                        <span className="text-sm font-medium text-muted-foreground">Humidity</span>
+                      </div>
+                      <div className="text-3xl font-bold">{ahu.currentHumidity.toFixed(1)}%</div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Installation Date</p>
-                      <p className="text-sm">{new Date(ahu.installationDate).toLocaleDateString()}</p>
+
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <IconWind className="h-5 w-5 text-red-500" />
+                        <span className="text-sm font-medium text-muted-foreground">Fan Speed</span>
+                      </div>
+                      <div className="text-3xl font-bold">{ahu.averageFanSpeed.toFixed(0)} RPM</div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Number of Fans</p>
-                      <p className="text-sm">{ahu.numberOfFans}</p>
+
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <IconBolt className="h-5 w-5 text-amber-500" />
+                        <span className="text-sm font-medium text-muted-foreground">Power</span>
+                      </div>
+                      <div className="text-3xl font-bold">{ahu.currentPowerConsumption.toFixed(1)} kW</div>
+                    </div>
+                  </div>
+
+                  {/* Secondary metrics in a smaller row */}
+                  <div className="flex justify-center gap-8 mt-6 pt-4 border-t">
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground">Runtime Today</div>
+                      <div className="text-lg font-semibold">{ahu.totalRuntimeToday.toFixed(1)}h</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground">Efficiency</div>
+                      <div className="flex items-center justify-center gap-1">
+                        {Array.from({ length: ahu.efficiencyRating }, (_, i) => (
+                          <IconStar
+                            key={`filled-star-${ahu.id}-${i}`}
+                            className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                          />
+                        ))}
+                        {Array.from({ length: 5 - ahu.efficiencyRating }, (_, i) => (
+                          <IconStar key={`empty-star-${ahu.id}-${i}`} className="h-4 w-4 text-gray-300" />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-
-            {/* Current Stats */}
-            <div className="px-4 lg:px-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Temperature</CardTitle>
-                    <IconTemperature className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{ahu.currentTemperature.toFixed(1)}°C</div>
-                    <p className="text-xs text-muted-foreground">Current reading</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Humidity</CardTitle>
-                    <IconDroplet className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{ahu.currentHumidity.toFixed(1)}%</div>
-                    <p className="text-xs text-muted-foreground">Current reading</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Average Fan Speed</CardTitle>
-                    <IconWind className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{ahu.averageFanSpeed.toFixed(0)} RPM</div>
-                    <p className="text-xs text-muted-foreground">Current average</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Power Consumption</CardTitle>
-                    <IconBolt className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{ahu.currentPowerConsumption.toFixed(1)} kW</div>
-                    <p className="text-xs text-muted-foreground">Current usage</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Runtime Today</CardTitle>
-                    <IconClock className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{ahu.totalRuntimeToday.toFixed(1)}h</div>
-                    <p className="text-xs text-muted-foreground">Total hours</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Efficiency Rating</CardTitle>
-                    <IconStar className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold flex items-center gap-1">
-                      {Array.from({ length: ahu.efficiencyRating }, (_, i) => (
-                        <IconStar
-                          key={`filled-star-${ahu.id}-${i}`}
-                          className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                        />
-                      ))}
-                      {Array.from({ length: 5 - ahu.efficiencyRating }, (_, i) => (
-                        <IconStar key={`empty-star-${ahu.id}-${i}`} className="h-5 w-5 text-gray-300" />
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Performance rating</p>
-                  </CardContent>
-                </Card>
-              </div>
             </div>
 
             {/* Control Panel */}
@@ -534,6 +486,5 @@ function AHUDetail() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -10,7 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AhuAhuIdRouteImport } from './routes/ahu/$ahuId'
+import { Route as AhuAhuIdRouteImport } from './routes/ahu.$ahuId'
+import { Route as AhuAhuIdEditRouteImport } from './routes/ahu_.$ahuId.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const AhuAhuIdRoute = AhuAhuIdRouteImport.update({
   path: '/ahu/$ahuId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AhuAhuIdEditRoute = AhuAhuIdEditRouteImport.update({
+  id: '/ahu_/$ahuId/edit',
+  path: '/ahu/$ahuId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ahu/$ahuId': typeof AhuAhuIdRoute
+  '/ahu/$ahuId/edit': typeof AhuAhuIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ahu/$ahuId': typeof AhuAhuIdRoute
+  '/ahu/$ahuId/edit': typeof AhuAhuIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ahu/$ahuId': typeof AhuAhuIdRoute
+  '/ahu_/$ahuId/edit': typeof AhuAhuIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ahu/$ahuId'
+  fullPaths: '/' | '/ahu/$ahuId' | '/ahu/$ahuId/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ahu/$ahuId'
-  id: '__root__' | '/' | '/ahu/$ahuId'
+  to: '/' | '/ahu/$ahuId' | '/ahu/$ahuId/edit'
+  id: '__root__' | '/' | '/ahu/$ahuId' | '/ahu_/$ahuId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AhuAhuIdRoute: typeof AhuAhuIdRoute
+  AhuAhuIdEditRoute: typeof AhuAhuIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AhuAhuIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ahu_/$ahuId/edit': {
+      id: '/ahu_/$ahuId/edit'
+      path: '/ahu/$ahuId/edit'
+      fullPath: '/ahu/$ahuId/edit'
+      preLoaderRoute: typeof AhuAhuIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AhuAhuIdRoute: AhuAhuIdRoute,
+  AhuAhuIdEditRoute: AhuAhuIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

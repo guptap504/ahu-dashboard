@@ -11,7 +11,7 @@ export interface AHUData {
   currentHumidity: number; // %
   averageFanSpeed: number; // RPM
   currentPowerConsumption: number; // kW
-  totalEnergyToday: number; // kWh
+  totalEnergyToday: number; // MWh
   fanSpeeds: number[]; // Individual fan speeds in RPM
   efficiencyRating: number; // 1-5 stars
   totalRuntimeToday: number; // hours
@@ -24,6 +24,10 @@ export interface TimeSeriesData {
   temperature: number; // °C
   humidity: number; // %
 }
+
+// Fan motor specifications: 1520kW per motor, max 1500rpm
+// Power consumption calculated based on fan speed using cubic relationship: P = P_rated * (RPM/1500)^3
+// Typical efficiency: 85-95% at rated speed, lower at partial loads
 
 // Mock AHU deployments
 export const ahuDeployments: AHUData[] = [
@@ -39,8 +43,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 22.5,
     currentHumidity: 45,
     averageFanSpeed: 1250,
-    currentPowerConsumption: 8.2,
-    totalEnergyToday: 156.8,
+    currentPowerConsumption: 2856, // 3 fans at ~952kW each (1250/1500)^3 * 1520kW
+    totalEnergyToday: 54.8, // 19.2 hours * 2856kW / 1000
     fanSpeeds: [1200, 1300, 1250],
     efficiencyRating: 4,
     totalRuntimeToday: 19.2,
@@ -57,8 +61,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 23.1,
     currentHumidity: 42,
     averageFanSpeed: 1100,
-    currentPowerConsumption: 6.8,
-    totalEnergyToday: 142.3,
+    currentPowerConsumption: 1608, // 2 fans at ~804kW each (1100/1500)^3 * 1520kW
+    totalEnergyToday: 33.6, // 20.9 hours * 1608kW / 1000
     fanSpeeds: [1050, 1150],
     efficiencyRating: 5,
     totalRuntimeToday: 20.9,
@@ -93,8 +97,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 21.2,
     currentHumidity: 35,
     averageFanSpeed: 1400,
-    currentPowerConsumption: 9.1,
-    totalEnergyToday: 178.5,
+    currentPowerConsumption: 2368, // 2 fans at ~1184kW each (1400/1500)^3 * 1520kW
+    totalEnergyToday: 46.4, // 19.6 hours * 2368kW / 1000
     fanSpeeds: [1350, 1450],
     efficiencyRating: 4,
     totalRuntimeToday: 19.6,
@@ -110,10 +114,10 @@ export const ahuDeployments: AHUData[] = [
     status: "online",
     currentTemperature: 18.5,
     currentHumidity: 30,
-    averageFanSpeed: 1600,
-    currentPowerConsumption: 12.3,
-    totalEnergyToday: 245.7,
-    fanSpeeds: [1550, 1600, 1650],
+    averageFanSpeed: 1500, // Max speed for critical server room
+    currentPowerConsumption: 4560, // 3 fans at 1520kW each (full speed)
+    totalEnergyToday: 91.2, // 20.0 hours * 4560kW / 1000
+    fanSpeeds: [1500, 1500, 1500],
     efficiencyRating: 5,
     totalRuntimeToday: 20.0,
   },
@@ -129,8 +133,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 25.3,
     currentHumidity: 48,
     averageFanSpeed: 950,
-    currentPowerConsumption: 5.2,
-    totalEnergyToday: 98.4,
+    currentPowerConsumption: 1152, // 2 fans at ~576kW each (950/1500)^3 * 1520kW
+    totalEnergyToday: 21.8, // 18.9 hours * 1152kW / 1000
     fanSpeeds: [900, 1000],
     efficiencyRating: 3,
     totalRuntimeToday: 18.9,
@@ -147,8 +151,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 26.7,
     currentHumidity: 52,
     averageFanSpeed: 800,
-    currentPowerConsumption: 3.8,
-    totalEnergyToday: 72.1,
+    currentPowerConsumption: 576, // 1 fan at 576kW (800/1500)^3 * 1520kW
+    totalEnergyToday: 10.9, // 19.0 hours * 576kW / 1000
     fanSpeeds: [800],
     efficiencyRating: 2,
     totalRuntimeToday: 19.0,
@@ -165,8 +169,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 22.0,
     currentHumidity: 40,
     averageFanSpeed: 1150,
-    currentPowerConsumption: 7.5,
-    totalEnergyToday: 144.2,
+    currentPowerConsumption: 2016, // 3 fans at ~672kW each (1150/1500)^3 * 1520kW
+    totalEnergyToday: 38.7, // 19.2 hours * 2016kW / 1000
     fanSpeeds: [1100, 1150, 1200],
     efficiencyRating: 4,
     totalRuntimeToday: 19.2,
@@ -201,8 +205,8 @@ export const ahuDeployments: AHUData[] = [
     currentTemperature: 23.8,
     currentHumidity: 46,
     averageFanSpeed: 1050,
-    currentPowerConsumption: 6.2,
-    totalEnergyToday: 118.7,
+    currentPowerConsumption: 1344, // 2 fans at ~672kW each (1050/1500)^3 * 1520kW
+    totalEnergyToday: 25.7, // 19.1 hours * 1344kW / 1000
     fanSpeeds: [1000, 1100],
     efficiencyRating: 4,
     totalRuntimeToday: 19.1,
@@ -234,21 +238,30 @@ export const timeSeriesData: TimeSeriesData[] = (() => {
     // Add monthly variation (higher consumption mid-month)
     const monthlyFactor = 1 + 0.2 * Math.sin((dayOfMonth / 15) * Math.PI);
 
-    // Power consumption pattern
-    let basePower = isWeekend ? 45 : 60; // Lower on weekends
-    basePower *= monthlyFactor; // Apply monthly variation
-    if (isNightTime) basePower *= 0.3;
-    else if (isPeakTime) basePower *= 1.2;
-
-    // Fan speed pattern (RPM)
-    let baseSpeed = isWeekend ? 800 : 1000;
+    // Fan speed pattern (RPM) - realistic range 0-1500rpm
+    let baseSpeed = isWeekend ? 600 : 900; // Lower on weekends
     baseSpeed *= monthlyFactor; // Apply monthly variation
-    if (isNightTime) baseSpeed *= 0.4;
-    else if (isPeakTime) baseSpeed *= 1.3;
+    if (isNightTime)
+      baseSpeed *= 0.3; // Very low at night
+    else if (isPeakTime) baseSpeed *= 1.2; // Higher during peak hours
 
-    // Add some randomness
-    const powerVariation = (Math.random() - 0.5) * 10;
-    const speedVariation = (Math.random() - 0.5) * 200;
+    // Ensure speed doesn't exceed 1500rpm
+    baseSpeed = Math.min(baseSpeed, 1500);
+
+    // Power consumption pattern based on fan speed using cubic relationship
+    // P = P_rated * (RPM/1500)^3 where P_rated = 1520kW per fan
+    // Assuming average of 2.5 fans per AHU across the system
+    const fansPerAHU = 2.5;
+    const ratedPowerPerFan = 1520; // kW
+    let basePower = fansPerAHU * ratedPowerPerFan * (baseSpeed / 1500) ** 3;
+
+    // Apply efficiency factor (85-95% at rated speed, lower at partial loads)
+    const efficiency = 0.85 + (baseSpeed / 1500) * 0.1; // 85% at low speed, 95% at rated speed
+    basePower *= efficiency;
+
+    // Add some randomness (proportional to base values)
+    const powerVariation = (Math.random() - 0.5) * basePower * 0.05; // ±2.5% variation
+    const speedVariation = (Math.random() - 0.5) * 50; // ±25 RPM variation
     const tempVariation = (Math.random() - 0.5) * 2;
     const humidityVariation = (Math.random() - 0.5) * 5;
 
@@ -265,24 +278,6 @@ export const timeSeriesData: TimeSeriesData[] = (() => {
 })();
 
 // Helper functions for calculations
-export function getAverageTemperature(): number {
-  const onlineAHUs = ahuDeployments.filter((ahu) => ahu.status === "online");
-  if (onlineAHUs.length === 0) return 0;
-  return onlineAHUs.reduce((sum, ahu) => sum + ahu.currentTemperature, 0) / onlineAHUs.length;
-}
-
-export function getAverageHumidity(): number {
-  const onlineAHUs = ahuDeployments.filter((ahu) => ahu.status === "online");
-  if (onlineAHUs.length === 0) return 0;
-  return onlineAHUs.reduce((sum, ahu) => sum + ahu.currentHumidity, 0) / onlineAHUs.length;
-}
-
-export function getAverageFanSpeed(): number {
-  const onlineAHUs = ahuDeployments.filter((ahu) => ahu.status === "online");
-  if (onlineAHUs.length === 0) return 0;
-  return onlineAHUs.reduce((sum, ahu) => sum + ahu.averageFanSpeed, 0) / onlineAHUs.length;
-}
-
 export function getTotalEnergyConsumption(): number {
   return ahuDeployments.reduce((sum, ahu) => sum + ahu.totalEnergyToday, 0);
 }
@@ -303,4 +298,12 @@ export function getAHUOnlinePercentage(): number {
   const total = getTotalAHUCount();
   if (total === 0) return 0;
   return (getOnlineAHUCount() / total) * 100;
+}
+
+export function getTotalEnergySaved(): number {
+  // Garvata optimization saves 40-50% energy compared to axial fans
+  // Using average of 45% savings
+  const totalEnergy = getTotalEnergyConsumption();
+  const savingsPercentage = 0.45; // 45% average savings
+  return totalEnergy * savingsPercentage;
 }
