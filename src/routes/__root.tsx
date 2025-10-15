@@ -27,6 +27,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "icon",
+        href: "/logo192.svg",
+        type: "image/svg+xml",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/apple-touch-icon.png",
+      },
     ],
   }),
 
@@ -43,7 +52,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="flex h-screen flex-col">
             <SiteHeader />
-            {children}
+            <main className="flex-1">
+              {children}
+            </main>
+            <footer className="border-t bg-background px-6 py-4">
+              <div className="text-center text-sm text-muted-foreground">
+                © 2025 Garvata — Optimizing Air, Effortlessly.
+              </div>
+            </footer>
           </div>
         </ThemeProvider>
         {/* <TanStackDevtools
