@@ -52,9 +52,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="flex h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">
-              {children}
-            </main>
+            <main className="flex-1">{children}</main>
             <footer className="border-t bg-background px-6 py-4">
               <div className="text-center text-sm text-muted-foreground">
                 © 2025 Garvata — Optimizing Air, Effortlessly.

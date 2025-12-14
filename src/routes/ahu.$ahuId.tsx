@@ -50,6 +50,7 @@ export const Route = createFileRoute("/ahu/$ahuId")({
 
 function AHUDetail() {
   const { ahu } = Route.useLoaderData();
+  console.log(ahu);
   const [isOnline, setIsOnline] = useState(ahu.status === "online");
   const [fanSpeeds, setFanSpeeds] = useState(ahu.fanSpeeds);
   const [hasChanges, setHasChanges] = useState(false);
