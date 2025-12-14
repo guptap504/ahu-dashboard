@@ -195,9 +195,6 @@ importers:
       web-vitals:
         specifier: ^5.1.0
         version: 5.1.0
-      wrangler:
-        specifier: ^4.43.0
-        version: 4.54.0
 
 packages:
 
