@@ -9,10 +9,7 @@
 		"test": "vitest run",
 		"format": "biome format --write",
 		"lint": "biome lint",
-		"check": "biome check",
-		"deploy": "wrangler deploy",
-		"cf-typegen": "wrangler types",
-		"postinstall": "npm run cf-typegen"
+		"check": "biome check"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "^6.3.1",
